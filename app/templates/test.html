@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register as Visitor</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+        }
+        .register-container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 100%;
+        }
+        .form-section {
+            display: flex;
+        }
+        .form-section .image-text {
+            flex: 1;
+            padding-right: 2rem;
+            border-right: 1px solid #dee2e6;
+            text-align: center;
+        }
+        .form-section .image-text img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+        .form-section .image-text h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .form-section .image-text p {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        .form-section .registration-form {
+            flex: 2;
+            padding-left: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+            padding: 0 1rem;
+        }
+        .btn-group {
+            margin-top: 1rem;
+        }
+        .btn-group .btn {
+            margin-right: 1rem;
+        }
+        .tabs {
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+        .tabs .btn {
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="tabs">
+            <button class="btn btn-primary">Visitor</button>
+            <button class="btn btn-secondary">Seller</button>
+            <button class="btn btn-secondary">Officer</button>
+        </div>
+        <div class="form-section">
+            <div class="image-text">
+                <img src="{% static 'path/to/your/image.png' %}" alt="Illustration">
+                <h2>Are You Ready!</h2>
+                <p>You are 30 seconds away from finding the suitable soils and crops for your locations!</p>
+                <button class="btn btn-primary">Login</button>
+            </div>
+            <div class="registration-form">
+                <h2>Register as Visitor</h2>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="district">District</label>
+                            <select class="form-control" id="district" name="district" required>
+                                <option value="">---Select District---</option>
+                                {% for district in districts %}
+                                <option value="{{ district.id }}">{{ district.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select class="form-control" id="gender" name="gender" required>
+                                {% for choice in gender_choices %}
+                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email ID</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

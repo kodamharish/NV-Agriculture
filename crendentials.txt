@@ -1,0 +1,17 @@
+Django Admin
+username : admin
+password : 12345
+
+Visitor
+username : harish12
+password : harish@12
+
+seller
+username : emvenu12
+password : emvenu@12
+
+Officer or Admin
+username : bhargav12
+password : bhargav@12
+
+
