@@ -48,6 +48,45 @@ class Visitor(models.Model):
     @property
     def get_username(self):
         return self.user.username
+    
+
+class Farmer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    joindate = models.DateField(auto_now_add=True)
+    email = models.EmailField(unique=True)
+    gender = models.CharField(max_length=20)
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+    def __str__(self):
+        return str(self.id)
+    @property
+    def get_id(self):
+        return self.user.id
+    @property
+    def get_name(self):
+        return self.user.first_name+" "+self.user.last_name
+    @property
+    def get_username(self):
+        return self.user.username
+    
+class Mentor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    joindate = models.DateField(auto_now_add=True)
+    email = models.EmailField(unique=True)
+    gender = models.CharField(max_length=20)
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+    def __str__(self):
+        return str(self.id)
+    @property
+    def get_id(self):
+        return self.user.id
+    @property
+    def get_name(self):
+        return self.user.first_name+" "+self.user.last_name
+    @property
+    def get_username(self):
+        return self.user.username
 
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

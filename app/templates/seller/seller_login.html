@@ -21,8 +21,8 @@
                     <ul class="nav navbar-nav text-light ml-auto">
                         <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'index' %}"><i class="fas fa-home"></i>Home</a></li>
                         <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle"></i>About</a></li>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'visitor_signup' %}"><i class="fas fa-user-plus"></i>Create Account</a></li>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'visitor_login' %}"><i class="fas fa-sign-in-alt"></i>Login</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'farmer_signup' %}"><i class="fas fa-user-plus"></i>Create Account</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'farmer_login' %}"><i class="fas fa-sign-in-alt"></i>Login</a></li>
                     </ul>
                 </div>
             </div>
@@ -57,7 +57,12 @@
                 </div>
                 
                 <div class="btn-group float-right">
-                    <a href="{% url 'visitor_login' %}" class="btn btn-secondary">Visitor</a>
+                    <!-- <a href="{% url 'visitor_login' %}" class="btn btn-secondary">Visitor</a>
+                    <a href="{% url 'seller_login' %}" class="btn btn-primary">Seller</a>
+                    <a href="{% url 'officer_login' %}" class="btn btn-secondary">Officer</a>
+                    <a href="{% url 'admin_login' %}" class="btn btn-secondary">Admin</a> -->
+                    <a href="{% url 'farmer_login' %}" class="btn btn-secondary">Farmer</a>
+                    <a href="{% url 'mentor_login' %}" class="btn btn-secondary">Mentor</a>
                     <a href="{% url 'seller_login' %}" class="btn btn-primary">Seller</a>
                     <a href="{% url 'officer_login' %}" class="btn btn-secondary">Officer</a>
                     <a href="{% url 'admin_login' %}" class="btn btn-secondary">Admin</a>

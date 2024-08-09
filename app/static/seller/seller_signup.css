@@ -138,7 +138,8 @@ ul{
     left: 0;
     right: 0;
     margin: auto;
-    background-color: #2dc997;
+    /* background-color: #2dc997; */
+    background-color: red;
     color: transparent;
     width: 0%;
     content: '.';

@@ -29,6 +29,12 @@ def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
 def is_visitor(user):
     return user.groups.filter(name='VISITOR').exists()
+
+def is_farmer(user):
+    return user.groups.filter(name='FARMER').exists()
+
+def is_mentor(user):
+    return user.groups.filter(name='MENTOR').exists()
 def is_officer(user):
     return user.groups.filter(name='OFFICER').exists()
 def is_seller(user):
@@ -366,6 +372,109 @@ def visitor_signup(request):
         form2=VisitorExtraForm()
     return render(request, 'visitor/visitor_signup.html',{'form1':form1,'form2':form2})
 
+
+
+#<-----Signup For Farmer----->#
+def farmer_signup(request):
+    if request.method=='POST':
+        form1=FarmerUserForm(request.POST)
+        form2=FarmerExtraForm(request.POST)
+        if form1.is_valid() and form2.is_valid():
+            user=form1.save()
+            user.set_password(user.password)
+            user.save()
+            f2=form2.save(commit=False)
+            f2.user=user
+            user2=f2.save()
+
+            my_farmer_group=Group.objects.get_or_create(name='FARMER')
+            my_farmer_group[0].user_set.add(user)
+
+            messages.success(request, 'Request send for approval, Try Login after 24 Hours..')
+
+            return HttpResponseRedirect('/')
+    else:
+        form1=FarmerUserForm()
+        form2=FarmerExtraForm()
+    return render(request, 'farmer/farmer_signup.html',{'form1':form1,'form2':form2})
+
+
+#<-----Login For Farmer----->#
+def farmer_login(request):
+    if request.method == 'POST':
+        form = FarmerLoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.groups.filter(name='FARMER'):
+                    if Farmer.objects.all().filter(user_id=user.id,status=True):
+                        login(request,user)
+                        return redirect('farmer_home')
+                    else:
+                       messages.success(request, 'Your Request is in process, please wait for Approval..') 
+                else:
+                    messages.success(request, 'Your account is not found in Visitor..')
+            else:
+                messages.success(request, 'Your Username and Password is Wrong..')
+    else:
+         form = FarmerLoginForm()           
+    return render(request, 'farmer/farmer_login.html',{'form':form})
+
+
+
+#<-----Signup For Mentor----->#
+def mentor_signup(request):
+    if request.method=='POST':
+        form1=MentorUserForm(request.POST)
+        form2=MentorExtraForm(request.POST)
+        if form1.is_valid() and form2.is_valid():
+            user=form1.save()
+            user.set_password(user.password)
+            user.save()
+            f2=form2.save(commit=False)
+            f2.user=user
+            user2=f2.save()
+
+            my_mentor_group=Group.objects.get_or_create(name='MENTOR')
+            my_mentor_group[0].user_set.add(user)
+
+            messages.success(request, 'Request send for approval, Try Login after 24 Hours..')
+
+            return HttpResponseRedirect('/')
+    else:
+        form1=MentorUserForm()
+        form2=MentorExtraForm()
+    return render(request, 'mentor/mentor_signup.html',{'form1':form1,'form2':form2})
+
+
+#<-----Login For Mentor----->#
+def mentor_login(request):
+    if request.method == 'POST':
+        form = MentorLoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.groups.filter(name='MENTOR'):
+                    if Mentor.objects.all().filter(user_id=user.id,status=True):
+                        login(request,user)
+                        return redirect('mentor_home')
+                    else:
+                       messages.success(request, 'Your Request is in process, please wait for Approval..') 
+                else:
+                    messages.success(request, 'Your account is not found in Visitor..')
+            else:
+                messages.success(request, 'Your Username and Password is Wrong..')
+    else:
+         form = MentorLoginForm()           
+    return render(request, 'mentor/mentor_login.html',{'form':form})
+
+
+
+
 #<-----Login For Visitor----->#
 def visitor_login(request):
     if request.method == 'POST':
@@ -394,6 +503,19 @@ def visitor_login(request):
 @user_passes_test(is_visitor)
 def visitor_home(request):
     return render(request, 'visitor/visitor_home.html')
+
+
+#<-----Home Page for Farmer----->#
+@login_required(login_url='farmer_login')
+@user_passes_test(is_farmer)
+def farmer_home(request):
+    return render(request, 'farmer/farmer_home.html')
+
+#<-----Home Page for Mentor----->#
+@login_required(login_url='mentor_login')
+@user_passes_test(is_mentor)
+def mentor_home(request):
+    return render(request, 'mentor/mentor_home.html')
 
 #<-----Profile Page for Visitor----->#
 @login_required(login_url='visitor_login')

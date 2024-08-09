@@ -7,6 +7,9 @@ class VisitorAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Visitor, VisitorAdmin)
 
+admin.site.register(Farmer)
+admin.site.register(Mentor)
+
 class OfficerAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Officer, OfficerAdmin)
@@ -33,3 +36,5 @@ admin.site.register(Product)
 admin.site.register(Cart)
 admin.site.register(Order)
 admin.site.register(Pay)
+
+

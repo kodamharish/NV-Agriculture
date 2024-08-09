@@ -10,7 +10,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% load static %}
-        <link rel="stylesheet" type="text/css" href="{% static 'officer/officer_signup.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'visitor/visitor_login.css' %}">
     </head>
 
     <body>
@@ -30,75 +30,63 @@
 
         <div class="sidestyle">
             <center>
-                <img src="{% static 'image/register2.png' %}" width="350" height="300">
-                <h1>Are You Ready!</h1>
-                <p>You are 30 seconds away for helping the people to understand the best and suitable soils and crops for their location..!</p><br><hr>
-                <p>Already an Officer of Agro Smart.?</p>
-                <a class="btn btn-primary" href="{% url 'officer_login' %}">Login</a>
+                <img src="{% static 'image/login1.png' %}" width="250" height="300">
+                <h1>Welcome Back!</h1>
+                <p>You don't have account as MENTOR.?</p>
+                <a class="btn btn-primary" href="{% url 'mentor_signup' %}">Register</a><br><hr>
             </center>
         </div>
     
         <div class="container">
 
-            <div class="btn-group float-right">
-                <!-- <a href="{% url 'visitor_signup' %}" class="btn btn-secondary">Visitor</a>
-                <a href="{% url 'seller_signup' %}" class="btn btn-secondary">Seller</a>
-                <a href="{% url 'officer_signup' %}" class="btn btn-primary">Officer</a> -->
-
-                <a href="{% url 'farmer_signup' %}" class="btn btn-secondary">Farmer</a>
-                <a href="{% url 'mentor_signup' %}" class="btn btn-secondary">Mentor</a>
-                <a href="{% url 'seller_signup' %}" class="btn btn-secondary">Seller</a>
-                <a href="{% url 'officer_signup' %}" class="btn btn-primary">Officer</a>
-                <!-- <a href="{% url 'visitor_signup' %}" class="btn btn-primary">Visitor</a> -->
-            </div>
-
             <form method="POST">
                 {% csrf_token %} 
 
-                <h1>REGISTER AS OFFICER</h1>
+                <div class="form-group">
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li>
+                            <div class="alert alert-danger">
+                                {{ message }}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
                 
+                <div class="btn-group float-right">
+                    <a href="{% url 'farmer_login' %}" class="btn btn-secondary">Farmer</a>
+                    <a href="{% url 'mentor_login' %}" class="btn btn-primary">Mentor</a>
+                    <a href="{% url 'seller_login' %}" class="btn btn-secondary">Seller</a>
+                    <a href="{% url 'officer_login' %}" class="btn btn-secondary">Officer</a>
+                    <a href="{% url 'admin_login' %}" class="btn btn-secondary">Admin</a>
+
+                    <!-- <a href="{% url 'visitor_login' %}" class="btn btn-primary">Visitor</a> -->
+
+                </div>
+
+                <h1>MENTOR LOGIN</h1>
+
                 <hr>
 
                 <div class="form-row">
-                    <div class="form-group col-md-6 mb-0">
-                        {{ form1.first_name | as_crispy_field }}
-                    </div>
-                    <div class="form-group col-md-6 mb-0">
-                        {{ form1.last_name | as_crispy_field }}
+                    <div class="form-group col-md-8 mb-0">
+                        {{ form.username | as_crispy_field }}
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group col-md-6 mb-0">
-                        {{ form2.district | as_crispy_field }}
-                    </div>
-                    <div class="form-group col-md-6 mb-0">
-                        {{ form2.gender | as_crispy_field }}
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6 mb-0">
-                        {{ form2.email | as_crispy_field }}
-                    </div>
-                    <div class="form-group col-md-6 mb-0">
-                        {{ form1.username | as_crispy_field }}
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6 mb-0">
-                        {{ form1.password | as_crispy_field }}
-                    </div>
-                    <div class="form-group col-md-6 mb-0">
-                        {{ form1.confirm_password | as_crispy_field }}
+                    <div class="form-group col-md-8 mb-0">
+                        {{ form.password | as_crispy_field }}
                     </div>
                 </div>
 
                 <hr>
                 
                 <div class="submit">
-                    <button type="submit" class="btn btn-primary" >Register</button>
+                    <button type="submit" class="btn btn-primary" >Login</button>
                     <button type="reset" class="btn btn-primary">Reset</button>
                 </div>
             </form>

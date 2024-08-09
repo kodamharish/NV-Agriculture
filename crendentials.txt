@@ -1,3 +1,5 @@
+Local
+
 Django Admin
 username : admin
 password : 12345
@@ -6,6 +8,15 @@ Visitor
 username : harish12
 password : harish@12
 
+Farmer
+username : darshan12
+password : darshan@12
+
+Mentor
+username : prasanna12
+password : prasanna@12
+
+
 seller
 username : emvenu12
 password : emvenu@12
@@ -13,5 +24,29 @@ password : emvenu@12
 Officer or Admin
 username : bhargav12
 password : bhargav@12
+
+
+
+
+AWS 
+
+Logins
+
+Django admin 
+username - admin
+password - 12345
+
+visitor 
+username - rahul9392
+password - rahul@9392
+
+seller
+username : emvenu12
+password : emvenu@12
+
+Officer or Admin
+username : bhargav12
+password : bhargav@12
+
 
 

@@ -74,6 +74,23 @@ urlpatterns = [
     path('active',active,name='active'),
     path('approve_product_delete',approve_product_delete,name='approve_product_delete'),
 
+
+
+    #<-----Farmer URLs----->
+    path('farmer_signup',farmer_signup,name='farmer_signup'),
+    path('farmer_login',farmer_login,name='farmer_login'),
+    path('farmer_home',farmer_home,name='farmer_home'),
+
+
+    #<-----Mentor URLs----->
+    path('mentor_signup',mentor_signup,name='mentor_signup'),
+    path('mentor_login',mentor_login,name='mentor_login'),
+    path('mentor_home',mentor_home,name='mentor_home'),
+
+
+
+
+
     #<-----Visitor URLs----->
 
     path('visitor_signup',visitor_signup,name='visitor_signup'),
