@@ -1,0 +1,45 @@
+{% extends "admin/admin_home.html" %}
+{% block content %}
+
+    <!-- Page content -->
+    <div class="content">
+
+        <div class="btn-group float-right">
+            <a href="{% url 'admin_active_farmer' %}" class="btn btn-primary"><i class="fas fa-user-check"></i>Active</a>
+            <a href="{% url 'admin_approve_farmer' %}" class="btn btn-secondary"><i class="fas fa-user-cog"></i>Request</a>
+        </div>
+
+        <h1><u><b>Active Farmers</b></u></h1>
+
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">SL NO.</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">District</th>
+                    <th scope="col">Joining Date</th>
+                    <th scope="col">Delete Visitor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in farmers %}
+                <tr>
+                    <th>{{ forloop.counter }}</th>
+                    <td>{{f.get_name}}</td>
+                    <td>{{f.get_username}}</td>
+                    <td>{{f.email}}</td>
+                    <td>{{f.gender}}</td>
+                    <td>{{f.district}}</td>
+                    <td>{{f.joindate}}</td>
+                    <td><a class="btn btn-danger" href="{% url 'delete_farmer_active' %}?farmer_id={{f.pk}}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

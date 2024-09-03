@@ -9,6 +9,8 @@ admin.site.register(Visitor, VisitorAdmin)
 
 admin.site.register(Farmer)
 admin.site.register(Mentor)
+admin.site.register(PH)
+
 
 class OfficerAdmin(admin.ModelAdmin):
     pass

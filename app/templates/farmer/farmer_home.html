@@ -5,10 +5,154 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         
+
+         <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jQuery (optional for date picker) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Datepicker -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'visitor/visitor_home.css' %}">
+
+        <style>
+
+            .hero__item {
+                height: 431px;
+                display: flex;
+                align-items: center;
+                padding-left: 75px;
+            }
+            .hero__text span {
+                font-size: 14px;
+                text-transform: uppercase;
+                font-weight: 700;
+                letter-spacing: 4px;
+                color: #7fad39;
+                font-family: "Cairo", sans-serif;
+            }
+            .hero__text h2 {
+                font-size: 46px;
+                color: #000000;
+                line-height: 52px;
+                font-weight: 700;
+                margin: 10px 0;
+                font-family: "Cairo", sans-serif;
+            }
+            .hero__text p {
+                margin-bottom: 35px;
+                color: black;
+                font-family: "Cairo", sans-serif;
+            }  
+            a.btn-outline-primary{
+                font-family: "Poppins", sans-serif;
+                text-transform: uppercase;
+                font-weight: 500;
+                font-size: 16px;
+                letter-spacing: 1px;
+                display: inline-block;
+                padding: 8px 28px;
+                border-radius: 50px;
+                transition: 0.5s;
+                margin: 10px;
+                border: 2px solid green;
+                color: green;
+            }
+    
+            a.btn-outline-primary:hover{
+                background: green;
+                border: 2px solid green;
+            }
+
+            
+           /* Geographical Map Chart */
+            body {
+                background-color: #f4f7f6;
+                font-family: 'Arial', sans-serif;
+            }
+    
+            .container {
+                background-color: #ffffff;
+                padding: 20px;
+                max-width:100%; /* Set a maximum width for the container */
+            }
+    
+            #map {
+                height: 400px;
+                width: 100%;
+            }
+    
+            /* Legend icon size reduction */
+            .chartjs-legend-color-box {
+                width: 10px !important;
+                height: 10px !important;
+                margin-right: 5px !important;
+            }
+    
+            .chartjs-legend-label-text {
+                font-size: 14px !important;
+            }
+
+
+            /* Chart styles */
+
+        
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-top: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .chart-container {
+            border: 1px solid #bcffbc;
+            border-radius: 10px;
+            padding: 50px;
+            margin-bottom: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            height: 500px;
+            width: 100%;
+        }
+
+        .chart-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .chart {
+            height: 300px;
+        }
+
+        .date-picker {
+            margin-bottom: 20px;
+        }
+
+        /* Legend icon size reduction */
+        .chartjs-legend-color-box {
+            width: 10px !important;
+            height: 10px !important;
+            margin-right: 5px !important;
+        }
+
+        .chartjs-legend-label-text {
+            font-size: 14px !important;
+        }
+        </style>
 
     </head>
 
@@ -20,7 +164,7 @@
                 <ul class="nav navbar-nav text-light ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i>Virtual Market</a></li>
                     <li class="nav-item" role="presentation"><a class="bar">|</a></li>
-                    <li class="nav-item" role="presentation"><a class="user"><i class="fas fa-user-circle"></i>{{user.visitor.get_name}}</a></li>
+                    <li class="nav-item" role="presentation"><a class="user"><i class="fas fa-user-circle"></i>{{user.farmer.get_name}} - Farmer</a></li>
                 </ul>
             </div>
         </div>
@@ -77,54 +221,6 @@
 
     {% block content %}
 
-    <style>
-        .hero__item {
-            height: 431px;
-            display: flex;
-            align-items: center;
-            padding-left: 75px;
-        }
-        .hero__text span {
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: #7fad39;
-            font-family: "Cairo", sans-serif;
-        }
-        .hero__text h2 {
-            font-size: 46px;
-            color: #000000;
-            line-height: 52px;
-            font-weight: 700;
-            margin: 10px 0;
-            font-family: "Cairo", sans-serif;
-        }
-        .hero__text p {
-            margin-bottom: 35px;
-            color: black;
-            font-family: "Cairo", sans-serif;
-        }  
-        a.btn-outline-primary{
-            font-family: "Poppins", sans-serif;
-            text-transform: uppercase;
-            font-weight: 500;
-            font-size: 16px;
-            letter-spacing: 1px;
-            display: inline-block;
-            padding: 8px 28px;
-            border-radius: 50px;
-            transition: 0.5s;
-            margin: 10px;
-            border: 2px solid green;
-            color: green;
-        }
-
-        a.btn-outline-primary:hover{
-            background: green;
-            border: 2px solid green;
-        }
-    </style>
     
     <!-- Page content -->
     <div class="content">
@@ -143,7 +239,7 @@
             {% endif %}
         </div>
 
-        <div class="hero__item set-bg" style="background-image: url('../static/image/agropic11.jpg'); width: 100%; background-size: cover;">
+        <!-- <div class="hero__item set-bg" style="background-image: url('../static/image/agropic11.jpg'); width: 100%; background-size: cover;">
             <div class="hero__text">
                 <span>Agro Smart</span>
                 <h2>Crop Recommendation</h2>
@@ -200,11 +296,219 @@
                     </div>
                 </div>
             </div>
+        </div> -->
+
+
+
+
+        <div class="container my-4">
+            <div class="row justify-content-center">
+                  <!-- Geographical Map Chart -->
+              <div class="col-md-12">
+                  <div class="chart-container">
+                      <div class="chart-title">Geographical Map Chart</div>
+                      <div id="map"></div>
+                  </div>
+              </div>
+            </div>
         </div>
 
+
+        
+        <div class="container my-4">
+            <div class="row justify-content-center">
+                <!-- Date Picker -->
+                <div class="col-md-12">
+                    <div class="date-picker">
+                        <label for="dateInput">Select Date:</label>
+                        <input type="text" id="dateInput" class="form-control">
+                    </div>
+                </div>
+        
+                <!-- Area Chart -->
+                <div class="col-md-12 mt-4">
+                    <div class="chart-container">
+                        <div class="chart-title">Tank Levels Over Time</div>
+                        <canvas id="areaChart" class="chart"></canvas>
+                    </div>
+                </div>
+        
+                <!-- Bar Chart -->
+                <div class="col-md-12 mt-4">
+                    <div class="chart-container">
+                        <div class="chart-title">Tank Levels Over Time</div>
+                        <canvas id="barChart" class="chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
+
+
+
 
     {% endblock %}
 
     </body>
+
+
+    <!-- Bootstrap 5 JS (optional, for interactive features) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Chart.js and Leaflet.js Script -->
+<script>
+    // Initialize the Geographical Map using Leaflet.js
+    var map = L.map('map').setView([51.505, -0.09], 2); // Centered globally
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add some marker examples for crops
+    L.marker([37.7749, -122.4194]).addTo(map)
+        .bindPopup('Crop A Location')
+        .openPopup();
+
+    L.marker([35.6895, 139.6917]).addTo(map)
+        .bindPopup('Crop B Location');
+
+    L.marker([51.5074, -0.1278]).addTo(map)
+        .bindPopup('Crop C Location');
+
+</script>
+
+
+<!-- Bootstrap 5 JS (optional, for interactive features) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Chart.js Script -->
+<script>
+    // Data passed from Django view
+    const chartData = JSON.parse('{{ chart_data|escapejs }}');
+    const dataByDate = chartData.data_by_date;
+    const timestampsByDate = chartData.timestamps_by_date;
+    const defaultDate = '{{ default_date }}';
+
+    // Initialize the Area Chart
+    let areaChart = new Chart(document.getElementById('areaChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: timestampsByDate[defaultDate] || [], // Use time labels from the view
+            datasets: [{
+                label: 'Tank Level',
+                data: dataByDate[defaultDate] || [], // Default data
+                backgroundColor: 'rgba(0, 192, 192, 0.3)', // Area fill color
+                borderColor: 'rgba(0, 192, 192, 0.9)', // Line color
+                fill: true, // Enable area fill
+                tension: 0.4 // Smooth lines
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Tank Level'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        boxWidth: 10,
+                        padding: 10,
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Initialize the Bar Chart
+    let barChart = new Chart(document.getElementById('barChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: timestampsByDate[defaultDate] || [], // Use time labels from the view
+            datasets: [{
+                label: 'Tank Level',
+                data: dataByDate[defaultDate] || [], // Default data
+                backgroundColor: 'rgba(0, 123, 255, 0.5)', // Bar fill color
+                borderColor: 'rgba(0, 123, 255, 1)', // Bar border color
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'pH Level'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        boxWidth: 10,
+                        padding: 10,
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Initialize date picker
+    $('#dateInput').datepicker({
+        dateFormat: 'yy-mm-dd',
+        onSelect: function(dateText) {
+            updateCharts(dateText);
+        }
+    });
+
+    // Function to update both charts based on the selected date
+    function updateCharts(date) {
+        if (dataByDate[date]) {
+            // Update Area Chart
+            areaChart.data.labels = timestampsByDate[date];
+            areaChart.data.datasets[0].data = dataByDate[date];
+            areaChart.update();
+
+            // Update Bar Chart
+            barChart.data.labels = timestampsByDate[date];
+            barChart.data.datasets[0].data = dataByDate[date];
+            barChart.update();
+        } else {
+            alert('No data available for the selected date.');
+        }
+    }
+
+    // Initialize with default date
+    if (defaultDate) {
+        $('#dateInput').datepicker('setDate', defaultDate);
+        updateCharts(defaultDate);
+    } else {
+        alert('No data available.');
+    }
+</script>
 </html>

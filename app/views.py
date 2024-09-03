@@ -16,6 +16,20 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from django.contrib.auth import authenticate
+
+import requests
+from .tokens import get_tokens_for_user
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+
 # Create your views here.
 
 def index(request):
@@ -122,6 +136,31 @@ def delete_visitor(request):
     user.delete()
     visitor.delete()
     return redirect(reverse('admin_approve_visitor'))
+
+
+#<-----Admin Approvall for farmers----->#
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin)
+def admin_approve_farmer(request):
+    farmers = Farmer.objects.all().filter(status=False)
+    return render(request, 'admin/admin_approve_farmer.html',{'farmers':farmers})
+
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin)
+def approve_farmer(request):
+    farmer=get_object_or_404(Farmer, pk=request.GET.get('farmer_id'))
+    farmer.status=True
+    farmer.save()
+    return redirect(reverse('admin_approve_farmer'))
+
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin)
+def delete_farmer(request):
+    farmer=get_object_or_404(Farmer, pk=request.GET.get('farmer_id'))
+    user=User.objects.get(id=farmer.user_id)
+    user.delete()
+    farmer.delete()
+    return redirect(reverse('admin_approve_farmer'))
 
 #<-----Admin Approvall for sellers----->#
 @login_required(login_url='admin_login')
@@ -231,6 +270,22 @@ def delete_visitor_active(request):
     user.delete()
     visitor.delete()
     return redirect(reverse('admin_active_visitor'))
+
+#<-----Active Farmer View for Admin----->#
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin)
+def admin_active_farmer(request):
+    farmers = Farmer.objects.all().filter(status=True)
+    return render(request, 'admin/admin_active_farmer.html',{'farmers':farmers})
+
+@login_required(login_url='admin_login')
+@user_passes_test(is_admin)
+def delete_farmer_active(request):
+    farmer=get_object_or_404(Farmer, pk=request.GET.get('farmer_id'))
+    user=User.objects.get(id=farmer.user_id)
+    user.delete()
+    farmer.delete()
+    return redirect(reverse('admin_active_farmer'))
 
 #<-----Active Seller View for Admin----->#
 @login_required(login_url='admin_login')
@@ -374,6 +429,72 @@ def visitor_signup(request):
 
 
 
+
+
+#<-----APIs----->#
+
+from django.contrib.auth.hashers import check_password
+
+class LoginAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        try:
+            user = User.objects.get(username=username)
+            if check_password(password, user.password):  # Using Django's password checking
+                tokens = get_tokens_for_user(user)
+                return Response(tokens, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+
+
+
+class TokenRefreshView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        refresh = request.data.get('refresh')
+        if refresh:
+            try:
+                token = RefreshToken(refresh)
+                return Response({
+                    'access': str(token.access_token),
+                }, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'error': 'Invalid refresh token'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Refresh token is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+class TokenVerifyView(APIView):
+    
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        token = request.data.get('token')
+        if token:
+            try:
+                # Attempt to validate as an AccessToken first
+                AccessToken(token)
+                return Response(status=status.HTTP_200_OK)
+            except Exception:
+                try:
+                    # If it fails, try validating as a RefreshToken
+                    RefreshToken(token)
+                    return Response(status=status.HTTP_200_OK)
+                except Exception:
+                    return Response({'error': 'Invalid or expired token'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+
 #<-----Signup For Farmer----->#
 def farmer_signup(request):
     if request.method=='POST':
@@ -399,7 +520,49 @@ def farmer_signup(request):
     return render(request, 'farmer/farmer_signup.html',{'form1':form1,'form2':form2})
 
 
+BASE_API_URL = 'http://127.0.0.1:8100/'
+
+
 #<-----Login For Farmer----->#
+def farmer_login_error(request):
+    if request.method == 'POST':
+        form = FarmerLoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            data = {'username': username,'password': password,}
+            response = requests.post(f'{BASE_API_URL}api/login/', data=data)
+            
+            
+
+            if response.status_code == 200 and user.groups.filter(name='FARMER'):
+                # Assuming the response contains the access token in JSON format
+                token_data = response.json()
+                access_token = token_data.get('access')
+                print(access_token,'login access_token ')
+
+                if access_token:
+                    # Store the access token in the session
+                    request.session['access_token'] = access_token
+                    print("Access token stored, redirecting to farmer_home...")
+
+                    messages.success(request, 'Logged in successfully!')
+                    
+                    return redirect('farmer_home')
+
+                    #return redirect(reverse('farmer_home'))
+                else:
+                    messages.error(request, 'Login failed: Access token not found.')
+            else:
+                messages.error(request, 'Login failed: {}'.format(response.json().get('message', 'Invalid credentials')))
+    else:
+         form = FarmerLoginForm()           
+    return render(request, 'farmer/farmer_login.html',{'form':form})
+
+
+
+
 def farmer_login(request):
     if request.method == 'POST':
         form = FarmerLoginForm(request.POST)
@@ -407,6 +570,54 @@ def farmer_login(request):
             username = request.POST['username']
             password = request.POST['password']
             user = authenticate(username=username, password=password)
+            data = {'username': username, 'password': password}
+            response = requests.post(f'{BASE_API_URL}api/login/', data=data)
+
+            #print(user,'user')
+
+            if response.status_code == 200 :
+                token_data = response.json()
+                access_token = token_data.get('access')
+
+                if user:
+                    if user.groups.filter(name='FARMER'):
+                        if Farmer.objects.all().filter(user_id=user.id,status=True):
+                            if access_token:
+                                #request.session['access_token'] = access_token
+                                # Ignore the 'next' parameter and force redirection to 'mentor_home'
+                                #return render(request,'farmer/farmer_home.html')
+                                login(request,user)
+                                #print(access_token,'access_token')
+                                messages.success(request, 'Logged in successfully!')
+                                return redirect('farmer_home')
+
+                            else:
+                                messages.error(request, 'Login failed: Access token not found.')
+                            login(request,user)
+                            return redirect('farmer_home')
+                        else:
+                          messages.success(request, 'Your Request is in process, please wait for Approval..') 
+                    else:
+                        messages.success(request, 'Your account is not found in Farmer..')
+                else:
+                   messages.success(request, 'Your Username and Password is Wrong..')   
+            else:
+                messages.error(request, 'Login failed: {}'.format(response.json().get('message', 'Invalid credentials')))
+    else:
+        form = FarmerLoginForm()
+
+    return render(request, 'farmer/farmer_login.html', {'form': form})
+
+#<-----Login For Farmer----->#
+def farmer_login_old(request):
+    if request.method == 'POST':
+        form = FarmerLoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            
+            
             if user:
                 if user.groups.filter(name='FARMER'):
                     if Farmer.objects.all().filter(user_id=user.id,status=True):
@@ -418,6 +629,8 @@ def farmer_login(request):
                     messages.success(request, 'Your account is not found in Visitor..')
             else:
                 messages.success(request, 'Your Username and Password is Wrong..')
+
+            
     else:
          form = FarmerLoginForm()           
     return render(request, 'farmer/farmer_login.html',{'form':form})
@@ -449,8 +662,45 @@ def mentor_signup(request):
     return render(request, 'mentor/mentor_signup.html',{'form1':form1,'form2':form2})
 
 
+
+
 #<-----Login For Mentor----->#
 def mentor_login(request):
+    if request.method == 'POST':
+        form = MentorLoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            data = {'username': username, 'password': password}
+            response = requests.post(f'{BASE_API_URL}api/login/', data=data)
+            if response.status_code == 200 :
+                token_data = response.json()
+                access_token = token_data.get('access')
+                print(access_token,'acess_token')
+                if user:
+                    if user.groups.filter(name='MENTOR'):
+                        if Mentor.objects.all().filter(user_id=user.id,status=True):
+                            if access_token:
+
+                                login(request,user)
+                                return redirect('mentor_home')
+                            else:
+                                messages.error(request, 'Login failed: Access token not found.')
+                        else:
+                         messages.success(request, 'Your Request is in process, please wait for Approval..') 
+                    else:
+                        messages.success(request, 'Your account is not found in Mentor..')
+                else:
+                    messages.success(request, 'Your Username and Password is Wrong..')
+            else:
+               messages.error(request, 'Login failed: {}'.format(response.json().get('message', 'Invalid credentials')))    
+    else:
+         form = MentorLoginForm()           
+    return render(request, 'mentor/mentor_login.html',{'form':form})
+
+
+def mentor_login_old(request):
     if request.method == 'POST':
         form = MentorLoginForm(request.POST)
         if form.is_valid():
@@ -471,9 +721,6 @@ def mentor_login(request):
     else:
          form = MentorLoginForm()           
     return render(request, 'mentor/mentor_login.html',{'form':form})
-
-
-
 
 #<-----Login For Visitor----->#
 def visitor_login(request):
@@ -508,8 +755,45 @@ def visitor_home(request):
 #<-----Home Page for Farmer----->#
 @login_required(login_url='farmer_login')
 @user_passes_test(is_farmer)
-def farmer_home(request):
+def farmer_home_old(request):
     return render(request, 'farmer/farmer_home.html')
+
+
+from django.shortcuts import render
+from .models import PH
+from collections import defaultdict
+import json
+
+@login_required(login_url='farmer_login')
+@user_passes_test(is_farmer)
+def farmer_home(request):
+    # Fetch all pH data from the database
+    ph_data = PH.objects.all()
+
+    # Group data by date and time
+    data_by_date = defaultdict(list)
+    timestamps_by_date = defaultdict(list)
+
+    for entry in ph_data:
+        date_str = entry.time_stamp.strftime('%Y-%m-%d')
+        time_str = entry.time_stamp.strftime('%H:%M')
+        data_by_date[date_str].append(float(entry.ph_value))
+        timestamps_by_date[date_str].append(time_str)
+
+    # Prepare the data to be used in JavaScript
+    chart_data = {
+        'data_by_date': data_by_date,
+        'timestamps_by_date': timestamps_by_date,
+    }
+    
+    context = {
+        'chart_data': json.dumps(chart_data),
+        'default_date': next(iter(data_by_date)) if data_by_date else ''
+    }
+
+    return render(request, 'farmer/farmer_home.html', context)
+
+
 
 #<-----Home Page for Mentor----->#
 @login_required(login_url='mentor_login')
@@ -1429,3 +1713,16 @@ def test(request):
     }
 
     return render(request, 'test.html', context)
+
+
+
+
+def logout(request):
+    request.session.flush()  # Clear the session data
+    messages.success(request, 'You have been logged out successfully!')
+    return redirect('farmer_login')
+
+
+
+
+

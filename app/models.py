@@ -272,3 +272,13 @@ class Pay(models.Model):
 
     def __self__(self):
         return self.id
+    
+
+
+class PH(models.Model):
+    device_id = models.CharField(max_length=20)
+    ph_value = models.DecimalField(max_digits=5, decimal_places=2)
+    time_stamp = models.DateTimeField()
+    temperature = models.DecimalField(max_digits=5, decimal_places=2)
+    moisture = models.DecimalField(max_digits=5, decimal_places=2)
+    tds = models.DecimalField(max_digits=5, decimal_places=2)

@@ -27,10 +27,15 @@
     <div class="sidebar">
         <a href="{% url 'admin_home' %}"><i class="fas fa-home"></i>Home</a>
         <a href="{% url 'admin_profile' %}"><i class="fas fa-address-card"></i>Profile</a>
-        <a href="{% url 'admin_active_visitor' %}"><i class="fas fa-users"></i>Manage Visitor</a>
+        <!-- <a href="{% url 'admin_active_visitor' %}"><i class="fas fa-users"></i>Manage Visitor</a> -->
+        <a href="{% url 'admin_active_farmer' %}"><i class="fas fa-users"></i>Manage Farmer</a>
+
+
         <a href="{% url 'admin_active_seller' %}"><i class="fas fa-user-tag"></i>Manage Seller</a>
         <a href="{% url 'admin_active_officer' %}"><i class="fas fa-user-tie"></i>Manage Officer</a>
         <a href="{% url 'admin_active_admin' %}"><i class="fas fa-user-shield"></i>Manage Admin</a>
+        <a href="#"><i class="fas fa-users"></i>Manage Mentor</a>
+
         <a href="{% url 'admin_product' %}"><i class="fas fa-shopping-cart"></i>Manage Product</a>
 
         <div class="logout">
@@ -94,9 +99,10 @@
         <div class="hero__item set-bg" style="background-image: url('../static/image/agropic9.jpg'); width: 100%; background-size: cover;">
             <div class="hero__text">
                 <span>Agro Smart</span>
-                <h2>Manage Visitor</h2>
-                <p>New visitor are waiting for your approval, to access the website..</p>
-                <a href="{% url 'admin_approve_visitor' %}" class="btn btn-outline-primary">Go There</a>
+                <h2>Manage Farmer</h2>
+                <p>New Farmer are waiting for your approval, to access the website..</p>
+                <!-- <a href="{% url 'admin_approve_visitor' %}" class="btn btn-outline-primary">Go There</a> -->
+                <a href="{% url 'admin_approve_farmer' %}" class="btn btn-outline-primary">Go There</a>
             </div>
         </div>
 

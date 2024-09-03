@@ -23,7 +23,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',index,name='index'),
-    path('logout',LogoutView.as_view(next_page='/'),name='logout'),
+    #path('logout',LogoutView.as_view(next_page='/'),name='logout'),
+    path('logout',logout,name='logout'),
+
     path('about',about,name='about'),
 
     path('ajax/load-regions/', load_regions, name='ajax_load_regions'),
@@ -39,6 +41,11 @@ urlpatterns = [
     path('approve_visitor', approve_visitor, name='approve_visitor'),
     path('delete_visitor', delete_visitor, name='delete_visitor'),
 
+        #<-----Farmer URLs----->
+    path('admin_approve_farmer', admin_approve_farmer,name='admin_approve_farmer'),
+    path('approve_farmer', approve_farmer, name='approve_farmer'),
+    path('delete_farmer', delete_farmer, name='delete_farmer'),
+
     path('admin_approve_seller', admin_approve_seller,name='admin_approve_seller'),
     path('approve_seller', approve_seller, name='approve_seller'),
     path('delete_seller', delete_seller, name='delete_seller'),
@@ -53,6 +60,10 @@ urlpatterns = [
 
     path('admin_active_visitor', admin_active_visitor,name='admin_active_visitor'),
     path('delete_visitor_active', delete_visitor_active, name='delete_visitor_active'),
+
+        #<-----Farmer URLs----->
+    path('admin_active_farmer', admin_active_farmer,name='admin_active_farmer'),
+    path('delete_farmer_active', delete_farmer_active, name='delete_farmer_active'),
 
     path('<int:id>/detail_seller', detail_seller,name='detail_seller'),
     path('<int:id>/detail_active_seller', detail_active_seller,name='detail_active_seller'),
@@ -75,11 +86,19 @@ urlpatterns = [
     path('approve_product_delete',approve_product_delete,name='approve_product_delete'),
 
 
+     #<-----API URLs----->
+    path('api/login/', LoginAPIView.as_view(), name='login'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token-verify'),
+
+
+
+
 
     #<-----Farmer URLs----->
     path('farmer_signup',farmer_signup,name='farmer_signup'),
     path('farmer_login',farmer_login,name='farmer_login'),
-    path('farmer_home',farmer_home,name='farmer_home'),
+    path('farmer_home/',farmer_home,name='farmer_home'),
 
 
     #<-----Mentor URLs----->

@@ -50,3 +50,12 @@ password : bhargav@12
 
 
 
+
+
+API Payloads
+
+
+{
+  "username": "harish12",
+  "password": "harish@12"
+}
